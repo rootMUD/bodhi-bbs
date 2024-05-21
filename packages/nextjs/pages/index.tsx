@@ -47,7 +47,9 @@ const ETHSpace: NextPage = () => {
                 {categories.map((category: string, index: number) => {
                   return (
                     <li key={index}>
-                      <a href="#">{category}</a>
+                      <a className="text-lg" href="#">
+                        {category}
+                      </a>
                     </li>
                   );
                 })}
