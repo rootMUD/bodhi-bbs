@@ -1,10 +1,14 @@
 import { useEffect, useState } from "react";
+import clsx from "clsx";
 import { NextPage } from "next";
 
 const ETHSpace: NextPage = () => {
-  const [categories, setCategories] = useState([]);
+  const [categories, setCategories] = useState<Array<string>>([]);
+  const [category, setCategory] = useState("all");
   const [loading, setLoading] = useState(false);
-
+  const setCategoryHandler = (category: string) => {
+    setCategory(category);
+  };
   const fetchCategories = async () => {
     setLoading(true);
     try {
@@ -20,7 +24,8 @@ const ETHSpace: NextPage = () => {
 
       const replaceAfter = categoriesData.value.replace(reg, "");
       const categoriesString = replaceAfter.substring(2, replaceAfter.length - 2);
-      const categoriesArray = categoriesString.split('", "');
+      const categoriesArray: Array<string> = categoriesString.split('", "');
+      categoriesArray.unshift("all");
       setCategories(categoriesArray);
     } catch (error) {
       console.error("Failed to fetch images:", error);
@@ -43,13 +48,16 @@ const ETHSpace: NextPage = () => {
                 Loading<span className="loading loading-dots loading-xs"></span>
               </div>
             ) : (
-              <ul className="menu [&_li>*]:rounded-lg">
-                {categories.map((category: string, index: number) => {
+              <ul className="menu [&_li>*]:rounded-lg space-y-2">
+                {categories.map((itemCategory: string, index: number) => {
                   return (
                     <li key={index}>
-                      <a className="text-lg" href="#">
-                        {category}
-                      </a>
+                      <button
+                        className={clsx("text-lg", category == itemCategory && "bg-accent")}
+                        onClick={() => setCategoryHandler(itemCategory)}
+                      >
+                        {itemCategory}
+                      </button>
                     </li>
                   );
                 })}
