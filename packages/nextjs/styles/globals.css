@@ -2,7 +2,7 @@
 @import "tailwindcss/components";
 @import "tailwindcss/utilities";
 .menu li > *:not(ul):not(.menu-title):not(details):hover {
-  @apply bg-secondary text-white;
+  @apply bg-secondary;
 }
 .menu li > *:not(ul):not(.menu-title):not(details):focus {
   @apply bg-accent text-white;
