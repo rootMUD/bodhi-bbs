@@ -35,7 +35,7 @@ const ETHSpace: NextPage = () => {
   return (
     <>
       <div className="w-72 bg-base-300 flex justify-center items-center p-4">
-        <div className="w-full h-auto bg-base-200 rounded-box py-3">
+        <div className="w-full h-auto bg-base-200 rounded-box py-3 self-start">
           <span className="py-2 flex justify-center items-center font-bold text-2xl">TOPICS</span>
           <main>
             {loading ? (
