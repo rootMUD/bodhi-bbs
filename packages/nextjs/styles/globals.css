@@ -1,7 +1,9 @@
 @import "tailwindcss/base";
 @import "tailwindcss/components";
 @import "tailwindcss/utilities";
-
+.menu li > *:not(ul):not(.menu-title):not(details):active {
+  @apply bg-base-100 text-white;
+}
 :root,
 [data-theme] {
   background: hsl(var(--b2));
