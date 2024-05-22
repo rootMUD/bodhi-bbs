@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { IconLink, IconUser } from "@tabler/icons-react";
 import clsx from "clsx";
 import { NextPage } from "next";
 
@@ -9,6 +10,7 @@ const ETHSpace: NextPage = () => {
   const [postLoading, setPostLoading] = useState(false);
   const [pageIndex, setPageIndex] = useState(1);
   const [posts, setPosts] = useState<Array<any>>([]);
+  const [connectedAddress, setConnectedAddress] = useState("0xbeafc083600efc2376648bff353ce8a3ecaa1463");
   const onNextPage = () => {
     // if (pageIndex < maxPage) {
     setPageIndex(pageIndex + 1);
@@ -52,7 +54,7 @@ const ETHSpace: NextPage = () => {
 
     const categoryParams = category === "all" ? "" : `&category=${category}`;
     const response = await fetch(
-      `https://bodhi-data.deno.dev/assets_by_space?space_addr=0xbeafc083600efc2376648bff353ce8a3ecaa1463&page=${page}&limit=10${categoryParams}`,
+      `https://bodhi-data.deno.dev/assets_by_space?space_addr=${connectedAddress}&page=${page}&limit=10${categoryParams}`,
       {
         method: "GET",
         headers: {
@@ -83,7 +85,7 @@ const ETHSpace: NextPage = () => {
 
   useEffect(() => {
     fetchPosts(pageIndex);
-  }, [pageIndex, category]);
+  }, [pageIndex, category, connectedAddress]);
   return (
     <>
       <div className="w-72 bg-base-300 flex justify-center items-center p-4">
@@ -120,16 +122,31 @@ const ETHSpace: NextPage = () => {
               Loading<span className="loading loading-dots loading-xs"></span>
             </div>
           )}
-          <div className="grid grid-cols-3 gap-2 p-4 md:gap-4 lg:grid-cols-4 xl:grid-cols-5">
+          <div className="grid grid-cols-1 gap-2 p-4 md:gap-4 lg:grid-cols-2 xl:grid-cols-3">
             {posts.map((post: any, index: number) => {
               return (
-                <div key={index} className="card bg-base-100 shadow-xl">
-                  <figure className="px-10 pt-10">
-                    <img src={post.image} alt={post.title} className="rounded-xl" />
+                <div key={index} className="card bg-base-100 shadow-xl max-w-[36rem]">
+                  <figure className="px-2 pt-2">
+                    <img src={post.image} alt={post.title} className="rounded-xl h-32" width={"100%"} height={"100%"} />
                   </figure>
-                  <div className="card-body items-center text-center">
-                    <h2 className="card-title">{post.title}</h2>
-                    <p>{post.description}</p>
+                  <div className="card-body flex flex-col">
+                    <h2 className="card-title text-xl font-bold">{post.title}</h2>
+                    <div className="flex-1 break-words overflow-hidden">{post.description}</div>
+                    <span className="font-xs inline-flex items-center  ">
+                      <IconUser size={16} />
+                      <span>
+                        {" "}
+                        {post.author.substring(0, 5) +
+                          "..." +
+                          post.author.substring(post.author.length - 5, post.author.length)}
+                      </span>
+                    </span>
+                    <span className="font-xs inline-flex items-center  ">
+                      <IconLink size={16} />
+                      <a href={post.url} target="_blank">
+                        {post.url}
+                      </a>
+                    </span>
                   </div>
                 </div>
               );
