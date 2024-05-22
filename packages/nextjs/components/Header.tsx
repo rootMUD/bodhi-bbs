@@ -101,9 +101,9 @@ export const Header = () => {
             <Image alt="SE2 logo" className="cursor-pointer" fill src="/logo.svg" />
           </div>
           <div className="flex flex-col">
-            <span className="font-bold leading-tight">🧀 Bodhi Imgs 🧀</span>
-            <span className="text-xs">The images on Bodhi.</span>
-            <span className="text-xs">Bodhi 上的图片！</span>
+            <span className="font-bold leading-tight">🧀 Bodhi BBS 🧀</span>
+            <span className="text-xs">The BBS on Bodhi.</span>
+            <span className="text-xs">Bodhi 上的BBS！</span>
           </div>
         </Link>
         <ul className="hidden lg:flex lg:flex-nowrap menu menu-horizontal px-1 gap-2">

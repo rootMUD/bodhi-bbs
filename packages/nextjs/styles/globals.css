@@ -1,7 +1,12 @@
 @import "tailwindcss/base";
 @import "tailwindcss/components";
 @import "tailwindcss/utilities";
-
+.menu li > *:not(ul):not(.menu-title):not(details):hover {
+  @apply bg-secondary;
+}
+.menu li > *:not(ul):not(.menu-title):not(details):focus {
+  @apply bg-accent text-white;
+}
 :root,
 [data-theme] {
   background: hsl(var(--b2));

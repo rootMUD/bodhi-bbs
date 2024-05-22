@@ -1,31 +1,18 @@
 import { useEffect, useState } from "react";
+import clsx from "clsx";
 import { NextPage } from "next";
-import { ImgShow } from "~~/components/ImgShow";
 
-const fetcher = (...args) => fetch(...args).then(res => res.json());
 const ETHSpace: NextPage = () => {
-  const [pageIndex, setPageIndex] = useState(1);
-  const [category, setCategory] = useState("All");
-  const [categories, setCategories] = useState([]);
-  const [images, setImages] = useState([]);
+  const [categories, setCategories] = useState<Array<string>>([]);
+  const [category, setCategory] = useState("all");
   const [loading, setLoading] = useState(false);
-  const [maxPage, setMaxPage] = useState(1);
-  const onNextPage = () => {
-    // if (pageIndex < maxPage) {
-    setPageIndex(pageIndex + 1);
-    // }
+  const setCategoryHandler = (category: string) => {
+    setCategory(category);
   };
-
-  const onPrevPage = () => {
-    if (pageIndex > 1) {
-      setPageIndex(pageIndex - 1);
-    }
-  };
-  // Fetch images from your backend
-  const fetchImages = async (page: number) => {
+  const fetchCategories = async () => {
     setLoading(true);
     try {
-      const categories = await fetch("https://bodhi-data.deno.dev/constant?key=bodhi_img_categories", {
+      const categories = await fetch("https://rootmud-bbs.deno.dev/constant?app_name=bbs_rootmud&key=categories", {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -37,42 +24,9 @@ const ETHSpace: NextPage = () => {
 
       const replaceAfter = categoriesData.value.replace(reg, "");
       const categoriesString = replaceAfter.substring(2, replaceAfter.length - 2);
-      const categoriesArray = categoriesString.split('","');
+      const categoriesArray: Array<string> = categoriesString.split('", "');
+      categoriesArray.unshift("all");
       setCategories(categoriesArray);
-      // const cursorResponse = await fetch("https://bodhi-data.deno.dev/imgs_latest_id", {
-      //   method: "GET",
-      //   headers: {
-      //     "Content-Type": "application/json",
-      //   },
-      // });
-      // const lastedIdData = await cursorResponse.json();
-      // const cursor = lastedIdData.latestId - (page - 1) * 10;
-      // setMaxPage(Math.ceil(lastedIdData.latestId / 10));
-      // const categoryParams = category === "All" ? "" : `&category=${category}`;
-      // const response = await fetch(`https://bodhi-data.deno.dev/imgs?cursor=${cursor}&limit=10${categoryParams}`, {
-      //   method: "GET",
-      //   headers: {
-      //     "Content-Type": "application/json",
-      //   },
-      // });
-
-      const categoryParams = category === "All" ? "" : `&category=${category}`;
-      const response = await fetch(`https://bodhi-data.deno.dev/imgs_page?page=${page}&limit=10${categoryParams}`, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-      const data = await response.json();
-      console.log(data);
-      // Assuming the data format matches what the ImgShow component expects
-      const formattedImages = data.images.map((img: { link: any; id_on_chain: string; category: string }) => ({
-        image: img.link,
-        link: "https://bodhi.wtf/" + img.id_on_chain,
-        category: img.category || "",
-        id: img.id_on_chain || 0,
-      }));
-      setImages(formattedImages);
     } catch (error) {
       console.error("Failed to fetch images:", error);
     }
@@ -80,12 +34,149 @@ const ETHSpace: NextPage = () => {
   };
 
   useEffect(() => {
-    fetchImages(pageIndex);
-  }, [pageIndex, category]);
+    fetchCategories();
+  }, []);
 
   return (
     <>
-      <div className="flex items-center h-[5rem] px-[2rem] justify-end">
+      <div className="w-72 bg-base-300 flex justify-center items-center p-4">
+        <div className="w-full h-auto bg-base-200 rounded-box py-3 self-start">
+          <span className="py-2 flex justify-center items-center font-bold text-2xl">TOPICS</span>
+          <main>
+            {loading ? (
+              <div className="flex justify-center items-center">
+                Loading<span className="loading loading-dots loading-xs"></span>
+              </div>
+            ) : (
+              <ul className="menu [&_li>*]:rounded-lg space-y-2">
+                {categories.map((itemCategory: string, index: number) => {
+                  return (
+                    <li key={index}>
+                      <button
+                        className={clsx("text-lg", category == itemCategory && "bg-accent")}
+                        onClick={() => setCategoryHandler(itemCategory)}
+                      >
+                        {itemCategory}
+                      </button>
+                    </li>
+                  );
+                })}
+              </ul>
+            )}
+          </main>
+        </div>
+      </div>
+      <div className="flex-1 bg-base-300 p-4">
+        <div className="w-full h-full bg-base-200 rounded-box p-3">
+          <ul className="timeline timeline-snap-icon max-md:timeline-compact timeline-vertical">
+            <li>
+              <div className="timeline-middle">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="h-5 w-5">
+                  <path
+                    fillRule="evenodd"
+                    d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z"
+                    clipRule="evenodd"
+                  />
+                </svg>
+              </div>
+              <div className="timeline-start md:text-end mb-10">
+                <time className="font-mono italic">1984</time>
+                <div className="text-lg font-black">First Macintosh computer</div>
+                The Apple Macintosh—later rebranded as the Macintosh 128K—is the original Apple Macintosh personal
+                computer. It played a pivotal role in establishing desktop publishing as a general office function. The
+                motherboard, a 9 in (23 cm) CRT monitor, and a floppy drive were housed in a beige case with integrated
+                carrying handle; it came with a keyboard and single-button mouse.
+              </div>
+              <hr />
+            </li>
+            <li>
+              <hr />
+              <div className="timeline-middle">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="h-5 w-5">
+                  <path
+                    fillRule="evenodd"
+                    d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z"
+                    clipRule="evenodd"
+                  />
+                </svg>
+              </div>
+              <div className="timeline-end mb-10">
+                <time className="font-mono italic">1998</time>
+                <div className="text-lg font-black">iMac</div>
+                iMac is a family of all-in-one Mac desktop computers designed and built by Apple Inc. It has been the
+                primary part of Apple's consumer desktop offerings since its debut in August 1998, and has evolved
+                through seven distinct forms
+              </div>
+              <hr />
+            </li>
+            <li>
+              <hr />
+              <div className="timeline-middle">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="h-5 w-5">
+                  <path
+                    fillRule="evenodd"
+                    d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z"
+                    clipRule="evenodd"
+                  />
+                </svg>
+              </div>
+              <div className="timeline-start md:text-end mb-10">
+                <time className="font-mono italic">2001</time>
+                <div className="text-lg font-black">iPod</div>
+                The iPod is a discontinued series of portable media players and multi-purpose mobile devices designed
+                and marketed by Apple Inc. The first version was released on October 23, 2001, about 8+1⁄2 months after
+                the Macintosh version of iTunes was released. Apple sold an estimated 450 million iPod products as of
+                2022. Apple discontinued the iPod product line on May 10, 2022. At over 20 years, the iPod brand is the
+                oldest to be discontinued by Apple
+              </div>
+              <hr />
+            </li>
+            <li>
+              <hr />
+              <div className="timeline-middle">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="h-5 w-5">
+                  <path
+                    fillRule="evenodd"
+                    d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z"
+                    clipRule="evenodd"
+                  />
+                </svg>
+              </div>
+              <div className="timeline-end mb-10">
+                <time className="font-mono italic">2007</time>
+                <div className="text-lg font-black">iPhone</div>
+                iPhone is a line of smartphones produced by Apple Inc. that use Apple's own iOS mobile operating system.
+                The first-generation iPhone was announced by then-Apple CEO Steve Jobs on January 9, 2007. Since then,
+                Apple has annually released new iPhone models and iOS updates. As of November 1, 2018, more than 2.2
+                billion iPhones had been sold. As of 2022, the iPhone accounts for 15.6% of global smartphone market
+                share
+              </div>
+              <hr />
+            </li>
+            <li>
+              <hr />
+              <div className="timeline-middle">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="h-5 w-5">
+                  <path
+                    fillRule="evenodd"
+                    d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z"
+                    clipRule="evenodd"
+                  />
+                </svg>
+              </div>
+              <div className="timeline-start md:text-end mb-10">
+                <time className="font-mono italic">2015</time>
+                <div className="text-lg font-black">Apple Watch</div>
+                The Apple Watch is a line of smartwatches produced by Apple Inc. It incorporates fitness tracking,
+                health-oriented capabilities, and wireless telecommunication, and integrates with iOS and other Apple
+                products and services
+              </div>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      {/* <div className="flex items-center h-[5rem] px-[2rem] justify-end">
         <select
           value={category}
           onChange={e => setCategory(e.target.value)}
@@ -114,7 +205,7 @@ const ETHSpace: NextPage = () => {
         <button onClick={onNextPage} className="join-item btn">
           »
         </button>
-      </div>
+      </div> */}
     </>
   );
 };
