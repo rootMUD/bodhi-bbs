@@ -2,11 +2,11 @@ import { useEffect, useState } from "react";
 import { IconLink, IconUser } from "@tabler/icons-react";
 import clsx from "clsx";
 import { NextPage } from "next";
+import TopicCard from "~~/components/TopicCard";
+import { useCategoryContext } from "~~/provider/categoryProvider";
 
 const ETHSpace: NextPage = () => {
-  const [categories, setCategories] = useState<Array<string>>([]);
-  const [category, setCategory] = useState("all");
-  const [loading, setLoading] = useState(false);
+  const { categories, category, loading, setCategory } = useCategoryContext();
   const [postLoading, setPostLoading] = useState(false);
   const [pageIndex, setPageIndex] = useState(1);
   const [posts, setPosts] = useState<Array<any>>([]);
@@ -24,29 +24,6 @@ const ETHSpace: NextPage = () => {
   };
   const setCategoryHandler = (category: string) => {
     setCategory(category);
-  };
-  const fetchCategories = async () => {
-    setLoading(true);
-    try {
-      const categories = await fetch("https://rootmud-bbs.deno.dev/constant?app_name=bbs_rootmud&key=categories", {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-      const categoriesData = await categories.json();
-      console.log(categoriesData);
-      const reg = /\\/g;
-
-      const replaceAfter = categoriesData.value.replace(reg, "");
-      const categoriesString = replaceAfter.substring(2, replaceAfter.length - 2);
-      const categoriesArray: Array<string> = categoriesString.split('", "');
-      categoriesArray.unshift("all");
-      setCategories(categoriesArray);
-    } catch (error) {
-      console.error("Failed to fetch images:", error);
-    }
-    setLoading(false);
   };
 
   const fetchPosts = async (page: number) => {
@@ -82,38 +59,15 @@ const ETHSpace: NextPage = () => {
   };
 
   useEffect(() => {
-    fetchCategories();
-  }, []);
-
-  useEffect(() => {
     fetchPosts(pageIndex);
   }, [pageIndex, category, connectedAddress]);
   return (
     <>
-      <div className="w-72 bg-base-300 flex justify-center items-center p-4">
+      <div className="w-72 bg-base-300 hidden lg:flex justify-center items-center p-4">
         <div className="w-full h-auto bg-base-200 rounded-box py-3 self-start">
           <span className="py-2 flex justify-center items-center font-bold text-2xl">TOPICS</span>
           <main>
-            {loading ? (
-              <div className="flex justify-center items-center">
-                Loading<span className="loading loading-dots loading-xs"></span>
-              </div>
-            ) : (
-              <ul className="menu [&_li>*]:rounded-lg space-y-2">
-                {categories.map((itemCategory: string, index: number) => {
-                  return (
-                    <li key={index}>
-                      <button
-                        className={clsx("text-lg", category == itemCategory && "bg-accent")}
-                        onClick={() => setCategoryHandler(itemCategory)}
-                      >
-                        {itemCategory}
-                      </button>
-                    </li>
-                  );
-                })}
-              </ul>
-            )}
+            <TopicCard />
           </main>
         </div>
       </div>

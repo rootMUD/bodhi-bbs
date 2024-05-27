@@ -1,10 +1,12 @@
-import React, { useCallback, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
+import TopicCard from "./TopicCard";
 import { Bars3Icon, BugAntIcon, MagnifyingGlassIcon, SparklesIcon } from "@heroicons/react/24/outline";
 import { FaucetButton, RainbowKitCustomConnectButton } from "~~/components/scaffold-eth";
 import { useOutsideClick } from "~~/hooks/scaffold-eth";
+import { useCategoryContext } from "~~/provider/categoryProvider";
 
 interface HeaderMenuLink {
   label: string;
@@ -74,11 +76,20 @@ export const HeaderMenuLinks = () => {
  * Site header
  */
 export const Header = () => {
+  const { categories, category, loading, setCategory } = useCategoryContext();
+
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const burgerMenuRef = useRef<HTMLDivElement>(null);
   useOutsideClick(
     burgerMenuRef,
     useCallback(() => setIsDrawerOpen(false), []),
+  );
+
+  const [isTopicDrawerOpen, setIsTopicDrawerOpen] = useState(false);
+  const topicMenuRef = useRef<HTMLDivElement>(null);
+  useOutsideClick(
+    topicMenuRef,
+    useCallback(() => setIsTopicDrawerOpen(false), []),
   );
 
   return (
@@ -103,6 +114,29 @@ export const Header = () => {
               }}
             >
               <HeaderMenuLinks />
+            </ul>
+          )}
+        </div>
+        <div className="lg:hidden dropdown" ref={topicMenuRef}>
+          <label
+            tabIndex={0}
+            className={`ml-1 btn btn-ghost ${isTopicDrawerOpen ? "hover:bg-secondary" : "hover:bg-transparent"}`}
+            onClick={() => {
+              setIsTopicDrawerOpen(prevIsOpenState => !prevIsOpenState);
+            }}
+          >
+            <span className="h-1/2 flex justify-center items-center">Topic</span>
+          </label>
+          {isTopicDrawerOpen && (
+            <ul
+              tabIndex={0}
+              className="menu menu-compact dropdown-content mt-3 p-2 shadow-2xl bg-base-100 rounded-box w-52"
+              onClick={() => {
+                setIsTopicDrawerOpen(false);
+              }}
+            >
+
+              <TopicCard />
             </ul>
           )}
         </div>
