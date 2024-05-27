@@ -125,7 +125,7 @@ export const Header = () => {
               setIsTopicDrawerOpen(prevIsOpenState => !prevIsOpenState);
             }}
           >
-            <span className="h-1/2 flex justify-center items-center">Topic</span>
+            <span className="h-1/2 flex justify-center items-center">Topics</span>
           </label>
           {isTopicDrawerOpen && (
             <ul
