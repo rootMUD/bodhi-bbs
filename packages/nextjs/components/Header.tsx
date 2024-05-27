@@ -17,6 +17,15 @@ export const menuLinks: HeaderMenuLink[] = [
     label: "Home",
     href: "/",
   },
+  // TODO: make this a dynamic link
+  {
+    label: "Space #5: View in Original Bodhi",
+    href: "https://bodhi.wtf/space/5",
+  },
+  {
+    label: "New Post 新帖子",
+    href: "https://bodhi.wtf/space/5",
+  },
   // {
   //   label: "Tagger",
   //   href: "/debug",
@@ -101,9 +110,8 @@ export const Header = () => {
             <Image alt="SE2 logo" className="cursor-pointer" fill src="/logo.svg" />
           </div>
           <div className="flex flex-col">
-            <span className="font-bold leading-tight">🧀 Bodhi BBS 🧀</span>
-            <span className="text-xs">The BBS on Bodhi.</span>
-            <span className="text-xs">Bodhi 上的BBS！</span>
+            <span className="font-bold leading-tight">🧀 rootMUD Community 🧀</span>
+            <span className="text-xs">ꄃA Community that focused on AI Autonomous Agent Network & Web3ꄃ.</span>
           </div>
         </Link>
         <ul className="hidden lg:flex lg:flex-nowrap menu menu-horizontal px-1 gap-2">

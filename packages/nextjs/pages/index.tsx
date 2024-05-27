@@ -54,7 +54,7 @@ const ETHSpace: NextPage = () => {
 
     const categoryParams = category === "all" ? "" : `&category=${category}`;
     const response = await fetch(
-      `https://bodhi-data.deno.dev/assets_by_space?space_addr=${connectedAddress}&page=${page}&limit=10${categoryParams}`,
+      `https://bodhi-data.deno.dev/assets_by_space_v2?space_addr=${connectedAddress}&page=${page}&limit=10&type=post${categoryParams}`,
       {
         method: "GET",
         headers: {
@@ -65,15 +65,17 @@ const ETHSpace: NextPage = () => {
     const data = (await response.json()) as Array<any>;
 
     const posts = data.map(item => {
+      const firstLineOfContent = item.content.split("\n")[0].replace(/#*/g, "").trim(); // Extracting the first line of the content
       return {
-        title: item.id_on_chain,
-        url: `https://bodhi.wtf/${item.id_on_chain}`,
+        title: firstLineOfContent,
+        url: `https://bodhi.wtf/space/5/${item.id_on_chain}`,
         description: `${(item.content as string)?.substring(0, 100)}...`,
         image: `https://picsum.photos/seed/${item.id_on_chain}/200`,
         author: item.author_true,
+        category: item.category,
       };
     });
-    console.log(posts);
+    console.log("fetch posts:", posts);
 
     setPosts(posts);
     setPostLoading(false);
@@ -146,6 +148,9 @@ const ETHSpace: NextPage = () => {
                       <a href={post.url} target="_blank">
                         {post.url}
                       </a>
+                    </span>
+                    <span className="font-xs inline-flex items-center  ">
+                      <b>{post.category}</b>
                     </span>
                   </div>
                 </div>
