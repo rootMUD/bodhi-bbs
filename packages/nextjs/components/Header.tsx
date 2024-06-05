@@ -26,7 +26,7 @@ export const menuLinks: HeaderMenuLink[] = [
   },
   {
     label: "New Post 新帖子",
-    href: "https://bodhi.wtf/space/5",
+    href: "https://bodhi.wtf/space/5/new",
   },
   // {
   //   label: "Tagger",
